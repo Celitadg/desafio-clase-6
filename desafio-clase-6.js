@@ -74,8 +74,8 @@ app.get('/productos', async (request, response) => {
 app.get('/productosRandom', async (request, response) => {
     const productos = await contenedor.getAll() 
     let id = Math.floor(Math.random() * productos.length)
-    console.log(id)
-    let productosRandom = await contenedor.getById(id)
+    console.log(id) 
+    let productosRandom = await contenedor.getById(id+1)
     response.send(productosRandom)
 })
 
