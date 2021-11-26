@@ -24,17 +24,16 @@ class Contenedor {
         }   
     }
 
-    getById(id){
-        let elemento = Contenedor.lista.filter(element => element.id == id)
+    async getById(id){
+        let todos = await this.getAll()
+        let elemento = todos.filter(element => element.id == id)
 
         if (elemento.length != 0) {
             const resultado = elemento
-            console.log(resultado)
             return resultado
         } else {
             const resultado = null
-            console.log(resultado)
-            return null
+            return resultado
         }   
     }
 
@@ -42,7 +41,6 @@ class Contenedor {
         try{
             const contenido = await fs.promises.readFile(this.archivo, 'utf-8')
             const contenidoStr = JSON.parse(contenido)
-            console.log(contenidoStr)
             return contenidoStr
         }
         catch{
@@ -53,10 +51,9 @@ class Contenedor {
 }
 
 
-let contenedor = new Contenedor ('./productos.json');
+const contenedor = new Contenedor ('./productos.json');
 
 const app = express()
-
 
 const PORT = process.env.PORT || 8080
 const server = app.listen(PORT, () => {
@@ -69,16 +66,16 @@ app.get('/', (request, response) => {
     response.send('Hola mundo!')
 }) 
 
-app.get('/productos', (request, response) => {
-    let productos = contenedor.getAll()
-    response.send(productos)
+app.get('/productos', async (request, response) => {
+    const productos = await contenedor.getAll()
+    response.json(productos)
 })
 
-app.get('/productosRandom', (request, response) => {
-    let id = Math.floor(Math.random()*((3+1)-1)+1)
-    console.log(id) 
-    let productosRandom = contenedor.getById(id)
+app.get('/productosRandom', async (request, response) => {
+    const productos = await contenedor.getAll() 
+    let id = Math.floor(Math.random() * productos.length)
+    console.log(id)
+    let productosRandom = await contenedor.getById(id)
     response.send(productosRandom)
 })
-
 
